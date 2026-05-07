@@ -7,8 +7,8 @@ class Database
     private static ?Database $instance = null;
     private ?PDO $pdo = null;
 
-    private string $host   = 'mysql.railway.internal';
-    private string $port   = '3306';
+    private string $host   = 'mainline.proxy.rlwy.net';
+    private string $port   = '32144';
     private string $dbname = 'railway';
     private string $user   = 'root';
     private string $pass   = 'yRPnvdUbVUdenuUyFwSKeutAtvXVhzxW';
