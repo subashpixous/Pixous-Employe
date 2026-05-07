@@ -7,15 +7,16 @@ class Database
     private static ?Database $instance = null;
     private ?PDO $pdo = null;
 
-    private string $host   = 'localhost';
-    private string $dbname = 'pixous_hr';
+    private string $host   = 'mysql.railway.internal';
+    private string $port   = '3306';
+    private string $dbname = 'railway';
     private string $user   = 'root';
-    private string $pass   = '';
+    private string $pass   = 'yRPnvdUbVUdenuUyFwSKeutAtvXVhzxW';
 
     private function __construct()
     {
         try {
-            $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4";
+            $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->dbname};charset=utf8mb4";
             $this->pdo = new PDO($dsn, $this->user, $this->pass, [
                 PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
