@@ -1,14 +1,12 @@
 <?php
 /**
  * Pixous HR Portal — Front Controller (Router)
- *
- * All requests route through here via .htaccess
- * URL pattern: index.php?page=controller&action=method
  */
 
 // ── Bootstrap ──
 error_reporting(E_ALL);
-ini_set('display_errors', '0');
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
 ini_set('log_errors', '1');
 
 require_once __DIR__ . '/config/app.php';
@@ -37,34 +35,67 @@ header('X-Frame-Options: SAMEORIGIN');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 
+// Start session
 startSecureSession();
 
 // ── Routing ──
-$page   = sanitize($_GET['page']   ?? 'dashboard');
+$page   = sanitize($_GET['page'] ?? 'dashboard');
 $action = sanitize($_GET['action'] ?? 'index');
 
-// Whitelist of valid routes
+// Valid routes
 $routes = [
-    'auth'      => ['login' => 'login', 'logout' => 'logout'],
-    'dashboard' => ['index' => 'index'],
-    'employees' => ['index' => 'index', 'create' => 'create', 'edit' => 'edit', 'view' => 'view', 'delete' => 'delete', 'toggle-status' => 'toggleStatus'],
-    'leaves'    => ['index' => 'index', 'store' => 'store', 'approve' => 'approve', 'delete' => 'delete'],
-    'payroll'   => ['index' => 'index', 'generate' => 'generate', 'payslip' => 'payslip'],
-    'tasks'     => ['index' => 'index', 'store' => 'store', 'update' => 'update', 'delete' => 'delete'],
+    'auth' => [
+        'login'  => 'login',
+        'logout' => 'logout'
+    ],
+
+    'dashboard' => [
+        'index' => 'index'
+    ],
+
+    'employees' => [
+        'index'         => 'index',
+        'create'        => 'create',
+        'edit'          => 'edit',
+        'view'          => 'view',
+        'delete'        => 'delete',
+        'toggle-status' => 'toggleStatus'
+    ],
+
+    'leaves' => [
+        'index'   => 'index',
+        'store'   => 'store',
+        'approve' => 'approve',
+        'delete'  => 'delete'
+    ],
+
+    'payroll' => [
+        'index'    => 'index',
+        'generate' => 'generate',
+        'payslip'  => 'payslip'
+    ],
+
+    'tasks' => [
+        'index'  => 'index',
+        'store'  => 'store',
+        'update' => 'update',
+        'delete' => 'delete'
+    ]
 ];
 
-// Map controller classes
+// Controller mapping
 $controllers = [
     'auth'      => 'AuthController',
     'dashboard' => 'DashboardController',
     'employees' => 'EmployeeController',
     'leaves'    => 'LeaveController',
     'payroll'   => 'PayrollController',
-    'tasks'     => 'TaskController',
+    'tasks'     => 'TaskController'
 ];
 
-// Resolve & dispatch
+// Route validation
 if (!isset($routes[$page]) || !isset($routes[$page][$action])) {
+
     if (isLoggedIn()) {
         redirect('dashboard');
     } else {
@@ -72,12 +103,16 @@ if (!isset($routes[$page]) || !isset($routes[$page][$action])) {
     }
 }
 
+// Load controller
 $controllerClass = $controllers[$page];
-$method          = $routes[$page][$action];
-$controller      = new $controllerClass();
+$method = $routes[$page][$action];
 
+$controller = new $controllerClass();
+
+// Method validation
 if (!method_exists($controller, $method)) {
-    redirect('dashboard');
+    die("Method not found: " . $method);
 }
 
+// Execute method
 $controller->$method();
