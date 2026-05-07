@@ -4,7 +4,7 @@
  */
 
 // Base URL — change to match your setup
-define('BASE_URL', '/hr-portal/');
+define('BASE_URL', 'https://pixous-employe.onrender.com');
 
 // App info
 define('APP_NAME', 'Pixous HR Portal');
