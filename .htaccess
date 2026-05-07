@@ -1,12 +1,17 @@
 RewriteEngine On
-RewriteBase /hr-portal/
+
+RewriteBase /
 
 # Redirect clean URLs to query params
-# e.g. /hr-portal/employees/create → index.php?page=employees&action=create
+# Example:
+# /employees/create -> index.php?page=employees&action=create
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z]+)/?$ index.php?page=$1&action=index [QSA,L]
-RewriteRule ^([a-z]+)/([a-z\-]+)/?$ index.php?page=$1&action=$2 [QSA,L]
+
+RewriteRule ^([a-zA-Z0-9_-]+)/?$ index.php?page=$1&action=index [QSA,L]
+
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)/?$ index.php?page=$1&action=$2 [QSA,L]
 
 # Prevent directory listing
 Options -Indexes
@@ -17,7 +22,7 @@ Options -Indexes
     Deny from all
 </FilesMatch>
 
-# Set security headers
+# Security headers
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-Frame-Options "SAMEORIGIN"
